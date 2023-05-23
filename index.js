@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getImageSize } from './getImageSize.js';
 import { log, time } from './log.js';
 
+const indexFileContent =[];
 const endTime = time(' Done in');
 const {writeJSON} = fs;
 
@@ -17,8 +18,11 @@ for (let id = INITIAL_ID_XKCD_COMICS; id < MAX_ID_XKCD_COMICS; id++) {
   const { height, width } = await getImageSize({url:img});
   log(`Got image dimensions: ${width}x${height}`)
   const comicToStore = {id, img, height, width, ...restOfComic}
-  const jsonFile = `./comics/${id}`;
+  indexFileContent.push(comicToStore)
+  const jsonFile = `./comics/${id}.json`;
   await writeJSON(jsonFile, comicToStore);
   log(`Wrote ${jsonFile}! ✔\n`);
+  await writeJSON(`./comics/index.json`, indexFileContent);
+  log(`Wrote index content! ✔\n`);
 }
 endTime();
